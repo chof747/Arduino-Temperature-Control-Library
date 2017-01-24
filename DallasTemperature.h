@@ -1,7 +1,7 @@
 #ifndef DallasTemperature_h
 #define DallasTemperature_h
 
-#define DALLASTEMPLIBVERSION "3.7.7" // To be deprecated
+#define DALLASTEMPLIBVERSION "3.7.3"
 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -13,9 +13,17 @@
 #define REQUIRESNEW false
 #endif
 
+#ifndef DALLASTEMP4TINY
+#define DALLASTEMP4TINY false
+#endif
+
 // set to true to include code implementing alarm search functions
 #ifndef REQUIRESALARMS
-#define REQUIRESALARMS true
+  #if !DALLASTEMP4TINY
+    #define REQUIRESALARMS true
+  #else
+    #define REQUIRESALARMS false
+  #endif
 #endif
 
 #include <inttypes.h>
@@ -124,15 +132,17 @@ public:
     // sends command for all devices on the bus to perform a temperature conversion
     void requestTemperatures(void);
 
+#if !DALLASTEMP4TINY
     // sends command for one device to perform a temperature conversion by address
     bool requestTemperaturesByAddress(const uint8_t*);
 
     // sends command for one device to perform a temperature conversion by index
     bool requestTemperaturesByIndex(uint8_t);
-
+#endif
     // returns temperature raw value (12 bit integer of 1/128 degrees C)
     int16_t getTemp(const uint8_t*);
 
+#if !DALLASTEMP4TINY
     // returns temperature in degrees C
     float getTempC(const uint8_t*);
 
@@ -144,6 +154,7 @@ public:
 
     // Get temperature for device index (slow)
     float getTempFByIndex(uint8_t);
+#endif
 
     // returns true if the bus requires parasite power
     bool isParasitePowerMode(void);
@@ -199,6 +210,8 @@ public:
     // note if device is not connected it will fail writing the data.
     // note if address cannot be found no error will be reported.
     // in short use carefully
+
+#if !DALLASTEMP4TINY
     void setUserData(const uint8_t*, int16_t );
     void setUserDataByIndex(uint8_t, int16_t );
     int16_t getUserData(const uint8_t* );
@@ -213,8 +226,9 @@ public:
     // convert from raw to Celsius
     static float rawToCelsius(int16_t);
 
-    // convert from raw to Fahrenheit
+    // convert from raw to Celsius
     static float rawToFahrenheit(int16_t);
+#endif
 
 #if REQUIRESNEW
 

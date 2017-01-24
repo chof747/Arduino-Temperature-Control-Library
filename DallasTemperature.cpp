@@ -2,7 +2,6 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-
 #include "DallasTemperature.h"
 
 
@@ -328,6 +327,7 @@ void DallasTemperature::requestTemperatures(){
 
 }
 
+#if !DALLASTEMP4TINY
 // sends command for one device to perform a temperature by address
 // returns FALSE if device is disconnected
 // returns TRUE  otherwise
@@ -350,7 +350,7 @@ bool DallasTemperature::requestTemperaturesByAddress(const uint8_t* deviceAddres
     return true;
 
 }
-
+#endif
 
 // Continue to check if the IC has responded with a temperature
 void DallasTemperature::blockTillConversionComplete(uint8_t bitResolution){
@@ -381,6 +381,8 @@ int16_t DallasTemperature::millisToWaitForConversion(uint8_t bitResolution){
 
 }
 
+
+#if !DALLASTEMP4TINY
 
 // sends command for one device to perform a temp conversion by index
 bool DallasTemperature::requestTemperaturesByIndex(uint8_t deviceIndex){
@@ -416,6 +418,8 @@ float DallasTemperature::getTempFByIndex(uint8_t deviceIndex){
     return getTempF((uint8_t*)deviceAddress);
 
 }
+
+#endif
 
 // reads scratchpad and returns fixed-point temperature, scaling factor 2^-7
 int16_t DallasTemperature::calculateTemperature(const uint8_t* deviceAddress, uint8_t* scratchPad){
@@ -474,6 +478,8 @@ int16_t DallasTemperature::getTemp(const uint8_t* deviceAddress){
 
 }
 
+#if !DALLASTEMP4TINY
+
 // returns temperature in degrees C or DEVICE_DISCONNECTED_C if the
 // device's scratch pad cannot be read successfully.
 // the numeric value of DEVICE_DISCONNECTED_C is defined in
@@ -492,6 +498,8 @@ float DallasTemperature::getTempF(const uint8_t* deviceAddress){
     return rawToFahrenheit(getTemp(deviceAddress));
 }
 
+#endif
+
 // returns true if the bus requires parasite power
 bool DallasTemperature::isParasitePowerMode(void){
     return parasite;
@@ -503,6 +511,9 @@ bool DallasTemperature::isParasitePowerMode(void){
 // See github issue #29
 
 // note if device is not connected it will fail writing the data.
+
+#if !DALLASTEMP4TINY
+
 void DallasTemperature::setUserData(const uint8_t* deviceAddress, int16_t data)
 {
     // return when stored value == new value
@@ -575,6 +586,8 @@ float DallasTemperature::rawToFahrenheit(int16_t raw){
     return ((float)raw * 0.0140625) + 32;
 
 }
+
+#endif
 
 #if REQUIRESALARMS
 
